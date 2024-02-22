@@ -43,12 +43,11 @@ async function generateHashResults(addresses: string[]) {
     const output = new Uint8Array(32);
     // Use personalization message to make the hash unique each application
     const hash = blake2b(output.length, undefined, undefined, Buffer.from("scallop-pyth-air")).update(input).digest('hex');
-    let view = new DataView(fromHEX(hash).buffer, 0);
     hashedResults.push({
       address,
       randomness: drand.randomness,
       hashResultHex: hash,
-      hashResultNumber: view.getBigUint64(0, true).toString(),
+      hashResultNumber: BigInt('0x' + hash).toString(),
     });
     
   });
