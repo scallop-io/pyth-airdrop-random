@@ -2,7 +2,7 @@
 
 ### Event Rule
 
-- A random snapshot will be taken during the period of February 19th to February 26th.
+- A random snapshot will be taken from February 21st to February 27th.
 - The top 3 winners will receive 4,888, 2,888, and 888 $PYTH, respectively, and will be selected randomly.
 - Additionally, 1,497 users will be randomly chosen from all users included in the snapshot. The remaining $PYTH amount will be distributed equally among these users.
 
