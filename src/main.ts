@@ -1,13 +1,13 @@
-import { getLatestDrandRound } from './drand';
+import { getDrandRound } from './drand';
 import blake2b from 'blake2b';
 import fs from 'fs';
-import { fromHEX } from '@mysten/sui.js/utils';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const isTest = true;
 const folderName = isTest ? 'test_result' : 'result';
+const TEST_ROUND = 400;
 
 
 async function main() {
@@ -15,27 +15,27 @@ async function main() {
     fs.mkdirSync(folderName, { recursive: true });
   }
   const addresses = await getAddressFromDb();
-  await generateHashResults(addresses);
+  await generateHashResults(addresses, TEST_ROUND);
   sortHashResult();
 }
 
 async function getAddressFromDb(): Promise<string[]> {
   const mongo = new MongoClient(process.env.MONGO_URI ?? 'mongodb://localhost:27017');
   await mongo.connect();
-  const pythAirdrop = mongo.db().collection('pyth-airdrop');
+  const pythAirdrop = mongo.db().collection('pyth_airdrop');
   const addresses = await pythAirdrop.find({}, {
     projection: {
-      address: 1,
+      sender: 1,
       _id: 0
     }
   }).toArray();
   await mongo.close();
-  return addresses.map((address: any) => address.address as string);
+  return addresses.map((address: any) => address.sender as string);
 }
 
 
-async function generateHashResults(addresses: string[]) {
-  const drand = await getLatestDrandRound();
+async function generateHashResults(addresses: string[], selectedRound: number) {
+  const drand = await getDrandRound(selectedRound);
 
   const hashedResults: {address: string, randomness: string, hashResultHex: string, hashResultNumber: string}[] = []; 
   addresses.forEach((address) => {
